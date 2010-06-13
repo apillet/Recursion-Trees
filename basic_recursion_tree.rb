@@ -21,12 +21,9 @@ module RecursionTree
     SPLIT = (5..12)
     BRANCH_LENGTH = (75..300)
 
-    def initialize(world, colour, bot_margin, x_coords, layer)
-      @world = world
-      @colour = colour
+    def initialize(bot_margin, x_coords)
       @bot_margin = bot_margin
       @x = x_coords
-      @layer = layer
 
       new_tree
     end
@@ -53,12 +50,8 @@ module RecursionTree
       end
     end
 
-    def draw
-      @branches.each do |tree_section|
-        tree_section.each do |b|
-          @world.draw_line(b[0][0], b[0][1], @colour, b[1][0], b[1][1], @colour, @layer)
-        end
-      end
+    def branch_lines
+      @branches.flatten(1)
     end
 
     def get_branch section, side
@@ -73,12 +66,13 @@ module RecursionTree
   end
 
   class Game < Gosu::Window
+    TREE_COLOR = Gosu::Color::BLACK
     BG_COLOR_1 = Gosu::Color::WHITE
     BG_COLOR_2 = Gosu::Color::GRAY
 
     def initialize
       super(WIDTH, HEIGHT, FULLSCREEN)
-      @tree = Tree.new(self, 0xFF000000, 10, WIDTH / 2, 2)
+      @tree = Tree.new(10, WIDTH / 2)
 
       self.caption = "Basic Recursion Tree"
       # Gosu and Moot Logos
@@ -93,18 +87,21 @@ module RecursionTree
     end
 
     def draw
-      @tree.draw
+      draw_quad(0, 0, BG_COLOR_1, WIDTH, 0, BG_COLOR_1,
+                0, HEIGHT, BG_COLOR_2, WIDTH, HEIGHT, BG_COLOR_2)
 
-      self.draw_quad(0, 0, BG_COLOR_1,
-                     WIDTH, 0, BG_COLOR_1,
-                     0, HEIGHT, BG_COLOR_2,
-                     WIDTH, HEIGHT, BG_COLOR_2,
-                     0)
+      draw_tree
 
       # Drawing the Logos
       @gosulogo.draw(10, HEIGHT - 43, 1)
       @mootlogo.draw(WIDTH - 83, HEIGHT - 43, 1)
       @text.draw("PRESS SPACE TO GENERATE A NEW TREE", 10, 10, 1, 1.5, 1.5, 0xFF000000)
+    end
+
+    def draw_tree
+      @tree.branch_lines.each do |(x1, y1), (x2, y2)|
+        draw_line(x1, y1, TREE_COLOR, x2, y2, TREE_COLOR)
+      end
     end
 
     def button_down(id)
