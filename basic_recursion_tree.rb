@@ -21,19 +21,15 @@ module RecursionTree
     SPLIT = (5..12)
     BRANCH_LENGTH = (75..300)
 
-    def initialize(bot_margin, x_coords)
-      @bot_margin = bot_margin
-      @x = x_coords
+    BOTTOM_MARGIN = 10
 
-      new_tree
-    end
-
-    def new_tree
+    def initialize
       @shrink = SHRINK.rand / 10.0
       @max_splits = SPLIT.rand         # how many times the branches have split
       @degree_shrink = ANGLE.rand
       @branches = []
-      @branches << [ [[@x, HEIGHT - @bot_margin], [@x, HEIGHT - BRANCH_LENGTH.rand]] ] # First Branch
+      x = WIDTH / 2
+      @branches << [ [[x, HEIGHT - BOTTOM_MARGIN], [x, HEIGHT - BRANCH_LENGTH.rand]] ] # First Branch
     end
 
     def update
@@ -72,14 +68,12 @@ module RecursionTree
 
     def initialize
       super(WIDTH, HEIGHT, FULLSCREEN)
-      @tree = Tree.new(10, WIDTH / 2)
-
       self.caption = "Basic Recursion Tree"
       # Gosu and Moot Logos
       @mootlogo = Gosu::Image.new(self, "media/moot.png", false)
       @gosulogo = Gosu::Image.new(self, "media/gosu_logo.png", false)
-
       @text = Gosu::Font.new(self, 'media/bitlow.ttf', 10)
+      generate_tree
     end
 
     def update
@@ -105,8 +99,12 @@ module RecursionTree
     end
 
     def button_down(id)
-      close          if id == Gosu::KbEscape
-      @tree.new_tree if id == Gosu::KbSpace
+      close         if id == Gosu::KbEscape
+      generate_tree if id == Gosu::KbSpace
+    end
+
+    def generate_tree
+      @tree = Tree.new
     end
   end
 end
