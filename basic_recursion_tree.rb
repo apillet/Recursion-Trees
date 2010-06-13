@@ -123,15 +123,9 @@ class Game < Gosu::Window
   end
   
   def button_down(id)
-     if button_down? Gosu::KbEscape
-       close
-     end
-
-     if button_down? Gosu::KbSpace
-       @tree.new_tree
-     end
-
-   end
+    close          if id == Gosu::KbEscape
+    @tree.new_tree if id == Gosu::KbSpace
+  end
   
 end
 
