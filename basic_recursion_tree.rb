@@ -16,17 +16,16 @@ module RecursionTree
   FULLSCREEN = false
 
   class Tree
-    ANGLE = (20..90)
-    SHRINK = (2..6)
-    SPLIT = (5..12)
+    MAX_SPLIT     = (5..12)
+    SHRINK_RATE   = (2..6)
+    SHRINK_ANGLE  = (20..90)
     BRANCH_LENGTH = (75..300)
-
     BOTTOM_MARGIN = 10
 
     def initialize
-      @shrink = SHRINK.rand / 10.0
-      @max_splits = SPLIT.rand         # how many times the branches have split
-      @degree_shrink = ANGLE.rand
+      @shrink = SHRINK_RATE.rand / 10.0
+      @max_splits = MAX_SPLIT.rand         # how many times the branches have split
+      @degree_shrink = SHRINK_ANGLE.rand
       @branches = []
       x = WIDTH / 2
       @branches << [ [[x, HEIGHT - BOTTOM_MARGIN], [x, HEIGHT - BRANCH_LENGTH.rand]] ] # First Branch
@@ -62,18 +61,27 @@ module RecursionTree
   end
 
   class Game < Gosu::Window
-    TREE_COLOR = Gosu.black
-    BG_COLOR_1 = Gosu.white
-    BG_COLOR_2 = Gosu.gray
+    BG_COLOR_1  = Gosu::Color::WHITE
+    BG_COLOR_2  = Gosu::Color::GRAY
+    TREE_COLOR  = Gosu::Color::BLACK
+    TEXT_COLOR  = Gosu::Color::BLACK
+    TEXT_MARGIN = 10
+    GOSU_LOGO_X = 10
+    MOOT_LOGO_X = WIDTH - 83
+    LOGO_Y      = HEIGHT - 43
 
     def initialize
       super(WIDTH, HEIGHT, FULLSCREEN)
-      self.caption = "Basic Recursion Tree"
-      # Gosu and Moot Logos
-      @mootlogo = Gosu::Image.new(self, "media/moot.png", false)
-      @gosulogo = Gosu::Image.new(self, "media/gosu_logo.png", false)
+      self.caption = 'Basic Recursion Tree'
+      @moot = Gosu::Image.new(self, 'media/moot.png', false)
+      @gosu = Gosu::Image.new(self, 'media/gosu_logo.png', false)
       @text = Gosu::Font.new(self, 'media/bitlow.ttf', 10)
       generate_tree
+    end
+
+    def button_down(id)
+      close         if id == Gosu::KbEscape
+      generate_tree if id == Gosu::KbSpace
     end
 
     def update
@@ -81,15 +89,14 @@ module RecursionTree
     end
 
     def draw
-      draw_quad(0, 0, BG_COLOR_1, WIDTH, 0, BG_COLOR_1,
-                0, HEIGHT, BG_COLOR_2, WIDTH, HEIGHT, BG_COLOR_2)
-
+      draw_background
       draw_tree
+      draw_logos
+      draw_text
+    end
 
-      # Drawing the Logos
-      @gosulogo.draw(10, HEIGHT - 43, 1)
-      @mootlogo.draw(WIDTH - 83, HEIGHT - 43, 1)
-      @text.draw("PRESS SPACE TO GENERATE A NEW TREE", 10, 10, 1, 1.5, 1.5, 0xFF000000)
+    def draw_background
+      draw_quad(0, 0, BG_COLOR_1, WIDTH, 0, BG_COLOR_1, 0, HEIGHT, BG_COLOR_2, WIDTH, HEIGHT, BG_COLOR_2)
     end
 
     def draw_tree
@@ -98,9 +105,13 @@ module RecursionTree
       end
     end
 
-    def button_down(id)
-      close         if id == Gosu::KbEscape
-      generate_tree if id == Gosu::KbSpace
+    def draw_logos
+      @gosu.draw(GOSU_LOGO_X, LOGO_Y, 1)
+      @moot.draw(MOOT_LOGO_X, LOGO_Y, 1)
+    end
+
+    def draw_text
+      @text.draw("PRESS SPACE TO GENERATE A NEW TREE", TEXT_MARGIN, TEXT_MARGIN, 1, 1.5, 1.5, TEXT_COLOR)
     end
 
     def generate_tree
