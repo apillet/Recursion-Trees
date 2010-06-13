@@ -4,12 +4,23 @@
 require 'rubygems'
 require 'gosu'
 
+class Range
+  def rand
+    self.to_a.sample
+  end
+end
+
 module RecursionTree
   WIDTH      = 800
   HEIGHT     = 600
   FULLSCREEN = false
 
   class Tree
+    ANGLE = (20..90)
+    SHRINK = (2..6)
+    SPLIT = (5..12)
+    BRANCH_LENGTH = (75..300)
+
     def initialize(world, colour, bot_margin, x_coords, layer)
       @world = world
       @colour = colour
@@ -21,19 +32,11 @@ module RecursionTree
     end
 
     def new_tree
-      angle_list = (20..90).to_a
-      shrink_list = (2..6).to_a
-      split_list = (5..12).to_a
-      initial_branch_length = (75..300).to_a
-
-      @max_splits = split_list[rand(split_list.length)]         # how many times the branches have split
-      @angle      = (Math::PI / 4)      # the angle of the splits
-      @shrink     = "0.#{shrink_list[rand(shrink_list.length)]}".to_f
-      @degree_shrink = angle_list[rand(angle_list.length)]
-
+      @shrink = SHRINK.rand / 10.0
+      @max_splits = SPLIT.rand         # how many times the branches have split
+      @degree_shrink = ANGLE.rand
       @branches = []
-
-      @branches << [ [[@x, HEIGHT - @bot_margin], [@x, HEIGHT - initial_branch_length[rand(initial_branch_length.length)]]] ] # First Branch
+      @branches << [ [[@x, HEIGHT - @bot_margin], [@x, HEIGHT - BRANCH_LENGTH.rand]] ] # First Branch
     end
 
     def update
