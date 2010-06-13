@@ -41,28 +41,9 @@ module RecursionTree
       new_section  = []
 
       if @branches.length < @max_splits
-
         last_section.each do |b|
-          old_x1, old_y1 = b[0][0], b[0][1]
-          old_x2, old_y2 = b[1][0], b[1][1]
-          old_length     = Gosu::distance(old_x1, old_y1, old_x2, old_y2)
-
-          new_x, new_y = old_x2, old_y2
-          new_length = (old_length * @shrink).to_i
-
-          angle = (Gosu::angle(old_x1, old_y1, old_x2, old_y2)).to_i
-
-          first_branch_angle  = angle + @degree_shirink
-          second_branch_angle = angle - @degree_shirink
-
-          first_branch_x = new_x + Gosu::offset_x(first_branch_angle, new_length)
-          first_branch_y = new_y + Gosu::offset_y(first_branch_angle, new_length)
-
-          second_branch_x = new_x + Gosu::offset_x(second_branch_angle, new_length)
-          second_branch_y = new_y + Gosu::offset_y(second_branch_angle, new_length)
-
-          new_section << [[new_x, new_y], [first_branch_x.to_i, first_branch_y.to_i]]
-          new_section << [[new_x, new_y], [second_branch_x.to_i, second_branch_y.to_i]]
+          new_section << get_branch(b, 1)
+          new_section << get_branch(b, -1)
         end
 
         @branches << new_section
@@ -75,6 +56,16 @@ module RecursionTree
           @world.draw_line(b[0][0], b[0][1], @colour, b[1][0], b[1][1], @colour, @layer)
         end
       end
+    end
+
+    def get_branch section, side
+      x1, y1 = section[0]
+      x2, y2 = section[1]
+      length = (Gosu::distance(x1, y1, x2, y2) * @shrink).to_i
+      branch_angle = (Gosu::angle(x1, y1, x2, y2)).to_i + @degree_shirink * side
+      branch_x = x2 + Gosu::offset_x(branch_angle, length)
+      branch_y = y2 + Gosu::offset_y(branch_angle, length)
+      [[x2, y2], [branch_x.to_i, branch_y.to_i]]
     end
   end
 
