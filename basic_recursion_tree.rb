@@ -66,9 +66,9 @@ module RecursionTree
   end
 
   class Game < Gosu::Window
-    TREE_COLOR = Gosu::Color::BLACK
-    BG_COLOR_1 = Gosu::Color::WHITE
-    BG_COLOR_2 = Gosu::Color::GRAY
+    TREE_COLOR = Gosu.black
+    BG_COLOR_1 = Gosu.white
+    BG_COLOR_2 = Gosu.gray
 
     def initialize
       super(WIDTH, HEIGHT, FULLSCREEN)
