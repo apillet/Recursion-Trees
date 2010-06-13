@@ -29,7 +29,7 @@ module RecursionTree
       @max_splits = split_list[rand(split_list.length)]         # how many times the branches have split
       @angle      = (Math::PI / 4)      # the angle of the splits
       @shrink     = "0.#{shrink_list[rand(shrink_list.length)]}".to_f
-      @degree_shirink = angle_list[rand(angle_list.length)]
+      @degree_shrink = angle_list[rand(angle_list.length)]
 
       @branches = []
 
@@ -62,7 +62,7 @@ module RecursionTree
       x1, y1 = section[0]
       x2, y2 = section[1]
       length = (Gosu::distance(x1, y1, x2, y2) * @shrink).to_i
-      branch_angle = (Gosu::angle(x1, y1, x2, y2)).to_i + @degree_shirink * side
+      branch_angle = (Gosu::angle(x1, y1, x2, y2)).to_i + @degree_shrink * side
       branch_x = x2 + Gosu::offset_x(branch_angle, length)
       branch_y = y2 + Gosu::offset_y(branch_angle, length)
       [[x2, y2], [branch_x.to_i, branch_y.to_i]]
