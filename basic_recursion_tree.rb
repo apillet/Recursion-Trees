@@ -73,6 +73,9 @@ module RecursionTree
   end
 
   class Game < Gosu::Window
+    BG_COLOR_1 = Gosu::Color::WHITE
+    BG_COLOR_2 = Gosu::Color::GRAY
+
     def initialize
       super(WIDTH, HEIGHT, FULLSCREEN)
       @tree = Tree.new(self, 0xFF000000, 10, WIDTH / 2, 2)
@@ -83,7 +86,6 @@ module RecursionTree
       @gosulogo = Gosu::Image.new(self, "media/gosu_logo.png", false)
 
       @text = Gosu::Font.new(self, 'media/bitlow.ttf', 10)
-      @colors = {:white => Gosu::white, :gray => Gosu::gray}
     end
 
     def update
@@ -93,10 +95,10 @@ module RecursionTree
     def draw
       @tree.draw
 
-      self.draw_quad(0, 0, @colors[:white],
-                     WIDTH, 0, @colors[:white],
-                     0, HEIGHT, @colors[:gray],
-                     WIDTH, HEIGHT, @colors[:gray],
+      self.draw_quad(0, 0, BG_COLOR_1,
+                     WIDTH, 0, BG_COLOR_1,
+                     0, HEIGHT, BG_COLOR_2,
+                     WIDTH, HEIGHT, BG_COLOR_2,
                      0)
 
       # Drawing the Logos
